@@ -8,6 +8,8 @@ class InkChannel:
         well_performance_res (str):         Performance result at the well level.
         sensor_uniformity_val (float):      Uniformity value at the sensor level.
         sensor_uniformity_res (str):        Uniformity result at the sensor level.
+        sensor_mean_val (float):            Mean value across the sensor for this ink channel.
+        sensor_center4_mean_val (float):    Mean value at the center 4 positions of the sensor for this ink channel.
     """
     def __init__(self, ink_channel_id, diff_perc_val = None, cor_inc_val = None):
         self.ink_channel_id = ink_channel_id
@@ -18,6 +20,8 @@ class InkChannel:
         
         self._sensor_uniformity_val = None
         self._sensor_uniformity_res = None
+        self._sensor_mean_val = None  # Added to store mean value across sensor
+        self._sensor_center4_mean_val = None  # Add this line
         
     def __repr__(self):
         return f"Ink Channel ID: {self.ink_channel_id}, Diff Perc Value: {self.diff_perc_val}, Corrected Incubation Value: {self.corrected_incubation_val}"
@@ -56,3 +60,17 @@ class InkChannel:
     @sensor_uniformity_res.setter
     def sensor_uniformity_res(self, value):
         self._sensor_uniformity_res = value
+    
+    @property
+    def sensor_mean_val(self):
+        return self._sensor_mean_val
+    @sensor_mean_val.setter
+    def sensor_mean_val(self, value):
+        self._sensor_mean_val = value
+    
+    @property
+    def sensor_center4_mean_val(self):
+        return self._sensor_center4_mean_val
+    @sensor_center4_mean_val.setter
+    def sensor_center4_mean_val(self, value):
+        self._sensor_center4_mean_val = value

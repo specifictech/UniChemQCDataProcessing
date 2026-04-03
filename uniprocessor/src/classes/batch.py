@@ -1,8 +1,8 @@
 import pandas as pd
 from typing import Dict
 
-from classes.sensor import Sensor
-import constants as const
+from uniprocessor.src.classes.sensor import Sensor
+from uniprocessor.src import constants as const
 
 class Batch:
     def __init__(self, batch_id: str, batch: str, batch_data: pd.DataFrame):

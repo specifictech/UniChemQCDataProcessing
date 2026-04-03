@@ -102,6 +102,7 @@ KNOWN_ERR_VAL = -1_000_000
 REPORT_NAME_ENDING = "-unichemqc-results.csv"
 REPORT_RESULT = "Result"
 REPORT_SENSOR_CV = "Sensor CV"
+REPORT_SENSOR_MEAN_VAL = " Diff Perc Sensor Mean"  # Renamed for clarity
 REPORT_SENSOR_UNIFORMITY = "Sensor Uniformity"
 REPORT_BATCH_UNIFORMITY = "Batch Uniformity"
 REPORT_PASS_RATE = "Pass Rate"
@@ -109,15 +110,26 @@ REPORT_BATCH_DISPOSITION = "Batch Disposition"
 REPORT_WELL = "Well"
 REPORT_SENSOR = "Sensor"
 REPORT_BATCH = "Batch"
+REPORT_SENSOR_CENTER4_MEAN_VAL = " Diff Perc Center 4 mean"
+
+BATCH_CENTER4_MEAN_51_9_G = "Batch Center 4 Mean 51.9 G"
+BATCH_CENTER4_MEAN_51_9_R = "Batch Center 4 Mean 51.9 R"
+BATCH_CENTER4_MEAN_51_9_LD_G = "Batch Center 4 Mean 51.9 LD G"
+BATCH_CENTER4_MEAN_51_9_LD_R = "Batch Center 4 Mean 51.9 LD R"
+BATCH_CENTER4_MEAN_33_39_G = "Batch Center 4 Mean 33.39 G"
+BATCH_CENTER4_MEAN_33_39_R = "Batch Center 4 Mean 33.39 R"
 
 # Report columns:
 REPORT_COL_DIFF_PERC_VAL = " Diff Perc Val"
 REPORT_COL_CORRECTED_VAL = " Corrected Val"
 REPORT_COL_WELL_PERFORMANCE_SPEC = " Well Performance Specification"
+
 REPORT_COLS = \
             [PROC_COL_RUN_NAME,
             PROC_COL_RUN_DATE, 
             PROC_COL_BATCH_ID,
+            "True Batch",  # <-- Add here
+            "System",  # <-- Add here
             PROC_COL_SENSOR_PRINT_DATE,
             PROC_COL_BATCH,
             PROC_COL_ANALYTE,
@@ -128,6 +140,8 @@ REPORT_COLS = \
             "sensor_num",
             PROC_COL_WELL,
             
+          
+
             INK_33_39_G + REPORT_COL_DIFF_PERC_VAL,
             INK_33_39_R + REPORT_COL_DIFF_PERC_VAL,
             INK_33_52_G + REPORT_COL_DIFF_PERC_VAL,
@@ -284,7 +298,7 @@ REPORT_COLS = \
             INK_91_1_R + " " + REPORT_SENSOR_CV,
             INK_51_9_G + " " + REPORT_SENSOR_CV,
             INK_51_9_R + " " + REPORT_SENSOR_CV,
-            
+     
             PARAM_SENSOR_UNIFORMITY_CV + " " + PARAM_LOGICAL_OPERATOR,
             PARAM_SENSOR_UNIFORMITY_CV + " " + PARAM_SPECIFICATION_VALUE,
             INK_33_39_G + " " + REPORT_SENSOR_UNIFORMITY + " " + REPORT_RESULT,
@@ -324,5 +338,32 @@ REPORT_COLS = \
             REPORT_BATCH_UNIFORMITY + " " + PARAM_LOGICAL_OPERATOR,
             REPORT_BATCH_UNIFORMITY + " " + PARAM_SPECIFICATION_VALUE,
             REPORT_BATCH_UNIFORMITY + " " + REPORT_RESULT,
-            REPORT_BATCH_DISPOSITION
+            REPORT_BATCH_DISPOSITION,    
+            
+            # ...added code...
+            INK_51_9_G    + REPORT_SENSOR_MEAN_VAL,
+            INK_51_9_R    + REPORT_SENSOR_MEAN_VAL,
+            INK_51_9_LD_G + REPORT_SENSOR_MEAN_VAL,
+            INK_51_9_LD_R + REPORT_SENSOR_MEAN_VAL,
+            INK_33_39_G   + REPORT_SENSOR_MEAN_VAL,
+            INK_33_39_R   + REPORT_SENSOR_MEAN_VAL,
+
+            INK_51_9_G    + REPORT_SENSOR_CENTER4_MEAN_VAL,
+            INK_51_9_R    + REPORT_SENSOR_CENTER4_MEAN_VAL,
+            INK_51_9_LD_G + REPORT_SENSOR_CENTER4_MEAN_VAL,
+            INK_51_9_LD_R + REPORT_SENSOR_CENTER4_MEAN_VAL,
+            INK_33_39_G   + REPORT_SENSOR_CENTER4_MEAN_VAL,
+            INK_33_39_R   + REPORT_SENSOR_CENTER4_MEAN_VAL,
+
+            BATCH_CENTER4_MEAN_51_9_G,
+            BATCH_CENTER4_MEAN_51_9_R,
+            BATCH_CENTER4_MEAN_51_9_LD_G,
+            BATCH_CENTER4_MEAN_51_9_LD_R,
+            BATCH_CENTER4_MEAN_33_39_G,
+            BATCH_CENTER4_MEAN_33_39_R,
+
             ]
+
+             # addition ends here...
+           
+           

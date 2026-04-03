@@ -2,8 +2,8 @@ from typing import Dict
 import pandas as pd
 import pprint
 
-import constants as const
-from classes.batch import Batch
+from uniprocessor.src import constants as const
+from uniprocessor.src.classes.batch import Batch
 
 class ProcRun:
     """Encapsulates the data collected from a single analysis.

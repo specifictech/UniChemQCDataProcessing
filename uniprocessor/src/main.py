@@ -1,17 +1,29 @@
 
-from classes.proc_run import ProcRun
-from classes.analysis import Analysis
-from classes.report import Report
+from uniprocessor.src.classes.proc_run import ProcRun
+from uniprocessor.src.classes.analysis import Analysis
+from uniprocessor.src.classes.report import Report
 import argparse
 import fnmatch
 import os
 import signal
+import sys
 import time
 from pathlib import Path
 from typing import Set, List
 from concurrent.futures import ThreadPoolExecutor
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
+
+
+# Ensure analytics is importable
+analytics_path = str(Path(__file__).resolve().parent.parent.parent / "analytics")
+print(f"[debug] analytics_path: {analytics_path}")
+print(f"[debug] sys.path before import: {sys.path}")
+if analytics_path not in sys.path:
+    sys.path.insert(0, analytics_path)
+print(f"[debug] sys.path after insert: {sys.path}")
+
+print("[startup] main.py script started", flush=True)
 
 # ---------- Helpers ----------
 def _file_size(path: Path) -> int:
@@ -164,7 +176,59 @@ def _initial_scan_and_enqueue(
             if p.is_file():
                 handler._submit_if_needed(p)
 
+def process_z_folder(z_folder: str, image_data_folder: str, overwrite_results: bool):
+    print(f"[start] process_z_folder called", flush=True)
+    z_path = Path(z_folder)
+    image_data_path = Path(image_data_folder)
+    print(f"[info] Checking Z folder: {z_folder}", flush=True)
+    print(f"[info] Checking ImageData folder: {image_data_folder}", flush=True)
+
+    if not z_path.exists():
+        print(f"[error] Z folder does not exist: {z_folder}", flush=True)
+        return
+    if not image_data_path.exists():
+        print(f"[error] ImageData folder does not exist: {image_data_folder}", flush=True)
+        return
+    
+    print(f"[debug] Finished checking ImageData folder, proceeding to file search...", flush=True)
+    files = [p for p in z_path.rglob("*_proc.csv") if p.is_file() and "summary" not in p.name.lower()]
+    print(f"[info] Found {len(files)} files to process in {z_folder}", flush=True)
+    sys.stdout.flush()
+
+    if not files:
+        print("[info] No files found to process.", flush=True)
+        sys.stdout.flush()
+        return
+
+    for file_path in files:
+        print(f"[process] {file_path}", flush=True)
+        sys.stdout.flush()
+        try:
+            # Get the folder name immediately under UniChemQC_Test_Protocol
+            rel = file_path.relative_to(z_path)
+            top_folder = rel.parts[0] if len(rel.parts) > 1 else "unknown"
+            output_name = f"{top_folder}-unichemqc-results.csv"
+            output_path = image_data_path / output_name
+
+            proc_run = ProcRun(str(file_path))
+            analysis = Analysis(proc_run)
+            analysis.run_analysis()
+            report = Report(proc_run, analysis)
+            status = report.generate_report(
+                output_dir=image_data_path,
+                overwrite=overwrite_results,
+                source_proc_path=file_path,
+                report_name=output_name  # Pass custom name
+            )
+            print(f"[result] {file_path} -> {output_path} ({status})", flush=True)
+        except PermissionError as ex:
+            print(f"[permission error] {file_path}: {ex}", flush=True)
+        except Exception as ex:
+            print(f"[error] {file_path}: {ex}", flush=True)
+        sys.stdout.flush()
+
 def main():
+    print("[main] Starting main()", flush=True)
     """
     Event-driven watcher using watchdog:
     - Watches ../../ImageData and ../../RandD-ImageData (siblings of 'uniprocessor') recursively
@@ -198,67 +262,61 @@ def main():
         default=False,
         help="If set, overwrite existing results files. Default: keep existing files."
     )
+    parser.add_argument(
+        "--process-z-folder",
+        action="store_true",
+        default=False,
+        help="Process all *_proc.csv files in Z:\\UniChemQC_Test_Protocol (excluding 'summary'), save results to ImageData."
+    )
 
     args = parser.parse_args()
 
-    # Resolve watch roots
+    if args.process_z_folder:
+        print("[main] --process-z-folder detected, running batch mode...", flush=True)
+        process_z_folder(
+            z_folder=r"Z:\UniChemQC_Test_Protocol",
+            image_data_folder=r"C:\Users\16015039\OneDrive - bioMerieux\Documents\GitHub\UniChemQCDataProcessing\ImageData",
+            overwrite_results=args.overwrite_results,
+        )
+        print("[main] Batch processing complete.", flush=True)
+        return
+
+    # Batch processing mode: process all *_proc.csv files in the specified directories and exit
     watch_roots = [Path(p).resolve() for p in args.dirs] if args.dirs else _default_watch_dirs()
 
-    # Validate presence (continue if one is missing)
     for root in watch_roots:
         if not root.exists():
-            print(f"\n[warn] watch dir not found: {root}")
-
-    processed: Set[Path] = set()
-    inflight: Set[Path] = set()
-    pattern = "*_proc.csv"
-
-    print(
-        f"\n[watch] roots={', '.join(str(r) for r in watch_roots)} "
-        f"pattern={pattern} recursive={args.recursive} workers={args.workers} overwrite_results={args.overwrite_results}"
-    )
-
-    executor = ThreadPoolExecutor(max_workers=args.workers)
-    handler = ProcFileHandler(
-        pattern=pattern,
-        settle=args.settle,
-        timeout=args.timeout,
-        processed=processed,
-        inflight=inflight,
-        executor=executor,
-        overwrite_results=args.overwrite_results,
-    )
-
-    observer = Observer()
-    # Schedule a watch for each root
-    for root in watch_roots:
-        if root.exists():
-            observer.schedule(handler, path=str(root), recursive=args.recursive)
-            print(f"\n[observer] scheduled: {root}")
-
-    observer.start()
-
-    # Enqueue pre-existing files
-    _initial_scan_and_enqueue(watch_roots, args.recursive, handler)
-
-    # Graceful shutdown
-    def _shutdown(signum=None, frame=None):
-        print("\n[exit] stopping observer...")
-        observer.stop()
-        observer.join()
-        print("[exit] shutting down workers...")
-        executor.shutdown(wait=True, cancel_futures=False)
-        print("[exit] done.")
-        raise SystemExit(0)
-
-    signal.signal(signal.SIGINT, _shutdown)  # Ctrl+C
-    signal.signal(signal.SIGTERM, _shutdown)  # kill/stop
-
-    try:
-        while True:
-            time.sleep(1.0)
-    except KeyboardInterrupt:
-        _shutdown()
+            print(f"[warn] watch dir not found: {root}")
+            continue
+        files = root.rglob("*_proc.csv") if args.recursive else root.glob("*_proc.csv")
+        for file_path in files:
+            if file_path.is_file():
+                print(f"[process] {file_path}", flush=True)
+                try:
+                    _process_file(file_path, overwrite_results=args.overwrite_results)
+                except Exception as ex:
+                    print(f"[error] {file_path}: {ex}", flush=True)
+    print("[main] Batch processing complete.", flush=True)
 
 if __name__ == "__main__":
     main()
+
+    # --- Analytics integration: run extract_sim_inputs after main report ---
+    from analytics import extract_sim_inputs
+    import pandas as pd
+    try:
+        # Find and combine all report CSVs in ImageData
+        # Always use the top-level ImageData directory
+        output_dir = Path(__file__).resolve().parent.parent.parent / "ImageData"
+        print(f"[analytics][debug] Looking for CSVs in: {output_dir}")
+        csv_files = list(output_dir.glob("*-unichemqc-results.csv"))
+        print(f"[analytics][debug] Found files: {[str(f) for f in csv_files]}")
+        if csv_files:
+            dfs = [pd.read_csv(str(f)) for f in csv_files]
+            combined_df = pd.concat(dfs, ignore_index=True)
+            extract_sim_inputs.extract_sim_inputs(combined_df, out_dir=str(output_dir))
+            print(f"[analytics] Simulation metrics written for {len(csv_files)} files combined.")
+        else:
+            print("[analytics] No report CSV found for simulation input extraction.")
+    except Exception as ex:
+        print(f"[analytics] Error running extract_sim_inputs: {ex}")

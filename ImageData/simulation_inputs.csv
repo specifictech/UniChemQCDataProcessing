@@ -1,0 +1,7 @@
+ink_channel,sigma_sensor_L,mu_L,sd_obs_L_batchmeans,sigma_lot_true_L,sigma_L_prod_true,mu_L_prod,legacy_threshold,n_batches_legacy,sigma_sensor_P,mu_P,sigma_lot_true_P,sigma_P_prod_true,mu_P_prod,n_batches_pillars,n_batches_paired,rho_LP,generated_at_utc
+51.9 G,,,,,,,10.0,0,,,,,,0,0,,2026-03-20T17:15:51.078897
+51.9 R,,,,,,,10.0,0,,,,,,0,0,,2026-03-20T17:15:51.084861
+33.39 G,,,,,,,10.0,0,,,,,,0,0,,2026-03-20T17:15:51.090779
+33.39 R,,,,,,,10.0,0,,,,,,0,0,,2026-03-20T17:15:51.096492
+51.9 LD G,,,,,,,10.0,0,,,,,,0,0,,2026-03-20T17:15:51.102163
+51.9 LD R,,,,,,,10.0,0,,,,,,0,0,,2026-03-20T17:15:51.108358

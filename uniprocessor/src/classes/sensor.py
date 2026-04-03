@@ -1,8 +1,8 @@
 from typing import Dict
 
-from classes.well import Well
-from classes.ink_channel import InkChannel
-import constants as const
+from uniprocessor.src.classes.well import Well
+from uniprocessor.src.classes.ink_channel import InkChannel
+from uniprocessor.src import constants as const
 
 class Sensor:
     """Represents a single Sensor within a TestRun, containing data for its associated wells.

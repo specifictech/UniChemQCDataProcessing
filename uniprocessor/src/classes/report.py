@@ -1,11 +1,10 @@
-
 from datetime import datetime as dt
 import csv
 import pandas as pd
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Union
-import constants as const
+from uniprocessor.src import constants as const
 
 class Report:
     def __init__(self, proc_run, analysis):
@@ -16,7 +15,8 @@ class Report:
         self,
         output_dir: Union[Path, str] = ".",
         overwrite: bool = False,
-        source_proc_path: Union[Path, str] = None
+        source_proc_path: Union[Path, str] = None,
+        report_name: str = None  # <-- Add this argument
     ) -> str:
         """
         Generate a tabular report (CSV) from the analysis results, saved to output_dir.
@@ -29,12 +29,16 @@ class Report:
           - create new, print '[create]' message, return 'created'.
         """
         current_day = dt.now().strftime("%Y-%m-%d")
-        report_name = f"{current_day}{const.REPORT_NAME_ENDING}"
+        # Use custom report_name if provided, else default
+        if report_name is not None:
+            final_report_name = report_name
+        else:
+            final_report_name = f"{current_day}{const.REPORT_NAME_ENDING}"
 
         # Ensure target directory exists and build full output path
         out_dir = Path(output_dir).resolve()
         out_dir.mkdir(parents=True, exist_ok=True)
-        out_path = out_dir / report_name
+        out_path = out_dir / final_report_name
 
         src = Path(source_proc_path).resolve() if source_proc_path else None
         existed_before = out_path.exists()
@@ -99,6 +103,8 @@ class Report:
                         run_name=sensor.run_name,
                         run_date=sensor.run_date,
                         batch_id=batch.batch_id,
+                        true_batch=self.analysis.decode_true_batch(batch.batch_id),
+                        system=self.analysis.decode_system(batch.batch_id),  # <-- Added here
                         sensor_print_date=sensor.sensor_print_date,
                         batch=batch.batch,
                         analyte=sensor.analyte,
@@ -294,7 +300,29 @@ class Report:
                         batch_uniform_logical_op=self.analysis.params[const.INK_33_39_G][const.PARAM_BATCH_UNIFORMITY + " " + const.PARAM_LOGICAL_OPERATOR],
                         batch_uniform_spec_val=self.analysis.params[const.INK_33_39_G][const.PARAM_BATCH_UNIFORMITY + " " + const.PARAM_SPECIFICATION_VALUE],
                         batch_uniformity_res=batch.batch_uniformity_res,
-                        batch_disposition=batch.batch_disposition
+                        batch_disposition=batch.batch_disposition,
+
+                        #added new columns here
+                        ic_51_9_g_sensor_mean_val=self.get_ic_data(well, const.INK_51_9_G, lambda ic: ic.sensor_mean_val),
+                        ic_51_9_r_sensor_mean_val=self.get_ic_data(well, const.INK_51_9_R, lambda ic: ic.sensor_mean_val),
+                        ic_51_9_ld_g_sensor_mean_val=self.get_ic_data(well, const.INK_51_9_LD_G, lambda ic: ic.sensor_mean_val),
+                        ic_51_9_ld_r_sensor_mean_val=self.get_ic_data(well, const.INK_51_9_LD_R, lambda ic: ic.sensor_mean_val),
+                        ic_33_39_g_sensor_mean_val=self.get_ic_data(well, const.INK_33_39_G, lambda ic: ic.sensor_mean_val),
+                        ic_33_39_r_sensor_mean_val=self.get_ic_data(well, const.INK_33_39_R, lambda ic: ic.sensor_mean_val),
+
+                        ic_51_9_g_sensor_center4_mean_val=self.get_ic_data(well, const.INK_51_9_G, lambda ic: ic.sensor_center4_mean_val),
+                        ic_51_9_r_sensor_center4_mean_val=self.get_ic_data(well, const.INK_51_9_R, lambda ic: ic.sensor_center4_mean_val),
+                        ic_51_9_ld_g_sensor_center4_mean_val=self.get_ic_data(well, const.INK_51_9_LD_G, lambda ic: ic.sensor_center4_mean_val),
+                        ic_51_9_ld_r_sensor_center4_mean_val=self.get_ic_data(well, const.INK_51_9_LD_R, lambda ic: ic.sensor_center4_mean_val),
+                        ic_33_39_g_sensor_center4_mean_val=self.get_ic_data(well, const.INK_33_39_G, lambda ic: ic.sensor_center4_mean_val),
+                        ic_33_39_r_sensor_center4_mean_val=self.get_ic_data(well, const.INK_33_39_R, lambda ic: ic.sensor_center4_mean_val),
+                    
+                        batch_center4_mean_51_9_g=str(batch.batch_center4_mean_51_9_g),
+                        batch_center4_mean_51_9_r=str(batch.batch_center4_mean_51_9_r),
+                        batch_center4_mean_51_9_ld_g=str(batch.batch_center4_mean_51_9_ld_g),
+                        batch_center4_mean_51_9_ld_r=str(batch.batch_center4_mean_51_9_ld_r),
+                        batch_center4_mean_33_39_g=str(batch.batch_center4_mean_33_39_g),
+                        batch_center4_mean_33_39_r=str(batch.batch_center4_mean_33_39_r),
                     )
                     report_rows.append(row)
         return report_rows
@@ -304,6 +332,8 @@ class ReportRow:
     run_name: str
     run_date: str
     batch_id: str
+    true_batch: str
+    system: str  # <-- Add here
     sensor_print_date: str
     batch: str
     analyte: str
@@ -499,3 +529,25 @@ class ReportRow:
     batch_uniform_spec_val: str
     batch_uniformity_res: str
     batch_disposition: str
+
+    #added starting here
+    ic_51_9_g_sensor_mean_val: str
+    ic_51_9_r_sensor_mean_val: str
+    ic_51_9_ld_g_sensor_mean_val: str
+    ic_51_9_ld_r_sensor_mean_val: str
+    ic_33_39_g_sensor_mean_val: str
+    ic_33_39_r_sensor_mean_val: str
+
+    ic_51_9_g_sensor_center4_mean_val: str
+    ic_51_9_r_sensor_center4_mean_val: str
+    ic_51_9_ld_g_sensor_center4_mean_val: str
+    ic_51_9_ld_r_sensor_center4_mean_val: str
+    ic_33_39_g_sensor_center4_mean_val: str
+    ic_33_39_r_sensor_center4_mean_val: str
+
+    batch_center4_mean_51_9_g: str
+    batch_center4_mean_51_9_r: str
+    batch_center4_mean_51_9_ld_g: str
+    batch_center4_mean_51_9_ld_r: str
+    batch_center4_mean_33_39_g: str
+    batch_center4_mean_33_39_r: str
