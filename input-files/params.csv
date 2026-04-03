@@ -1,0 +1,17 @@
+Spot ID,Channel,Spot ID and Channel,Analyte,Well Performance Logical Operator,Well Response Logical Text,Well Performance Specification Value,Well Performance Result Type,Sensor Performance Logical Operator,Sensor Performance Logical Text,Sensor Performance Specification Value,Sensor Performance Result Type,Batch Performance Logical Operator,Batch Performance Logical Text,Batch Performance Specification Value,%  Sensors Passing Performance Rate Result Type,Sensor Uniformity CV Logical Operator,Sensor Uniformity CV Logical Text,Sensor Uniformity CV Specification Value,Sensor Uniformity CV Result Type,Batch Uniformity Logical Operator,Batch Uniformity Logical Text,Batch Uniformity Specification Value,Batch Uniformity Result Type,Final Lot Disposition 
+33.39,R,33.39 R,NH3,<,less than,-20%,pass/fail,>,greater than,95%,pass/fail,>,greater than,80%,pass/fail,<,less than,1%,pass/fail,>,greater than,80%,pass/fail,pass/fail
+33.39,G,33.39 G,NH3,<,less than,-20%,pass/fail,>,greater than,95%,pass/fail,>,greater than,80%,pass/fail,<,less than,1%,pass/fail,>,greater than,80%,pass/fail,pass/fail
+33.52,R,33.52 R,NH3,<,less than,-9.86%,reference,>,greater than,95%,pass/fail,>,greater than,80%,pass/fail,<,less than,1%,pass/fail,>,greater than,80%,pass/fail,pass/fail
+33.52,G,33.52 G,NH3,<,less than,-9.48%,reference,>,greater than,95%,pass/fail,>,greater than,80%,pass/fail,<,less than,1%,pass/fail,>,greater than,80%,pass/fail,pass/fail
+51.12,R,51.12 R,SO2,>,greater than,5.46%,reference,>,greater than,95%,pass/fail,>,greater than,80%,pass/fail,<,less than,1%,pass/fail,>,greater than,80%,pass/fail,pass/fail
+51.12,G,51.12 G,SO2,>,greater than,10%,reference,>,greater than,95%,pass/fail,>,greater than,80%,pass/fail,<,less than,1%,pass/fail,>,greater than,80%,pass/fail,pass/fail
+70.13,R,70.13 R,NH3,<,less than,-7.50%,reference,>,greater than,95%,pass/fail,>,greater than,80%,pass/fail,<,less than,1%,pass/fail,>,greater than,80%,pass/fail,pass/fail
+70.13,G,70.13 G,NH3,<,less than,-4.45%,reference,>,greater than,95%,pass/fail,>,greater than,80%,pass/fail,<,less than,1%,pass/fail,>,greater than,80%,pass/fail,pass/fail
+51.9 LD,R,51.9 LD R,SO2,>,greater than,5.49%,pass/fail,>,greater than,95%,pass/fail,>,greater than,80%,pass/fail,<,less than,1%,pass/fail,>,greater than,80%,pass/fail,pass/fail
+51.9 LD,G,51.9 LD G,SO2,>,greater than,10%,pass/fail,>,greater than,95%,pass/fail,>,greater than,80%,pass/fail,<,less than,1%,pass/fail,>,greater than,80%,pass/fail,pass/fail
+91.19,R,91.19 R,SO2,>,greater than,7.78%,reference,>,greater than,95%,pass/fail,>,greater than,80%,pass/fail,<,less than,1%,pass/fail,>,greater than,80%,pass/fail,pass/fail
+91.19,G,91.19 G,SO2,>,greater than,23.73%,reference,>,greater than,95%,pass/fail,>,greater than,80%,pass/fail,<,less than,1%,pass/fail,>,greater than,80%,pass/fail,pass/fail
+91.1,R,91.1 R,SO2,>,greater than,3.34%,reference,>,greater than,95%,pass/fail,>,greater than,80%,pass/fail,<,less than,1%,pass/fail,>,greater than,80%,pass/fail,pass/fail
+91.1,G,91.1 G,SO2,>,greater than,9.84%,reference,>,greater than,95%,pass/fail,>,greater than,80%,pass/fail,<,less than,1%,pass/fail,>,greater than,80%,pass/fail,pass/fail
+51.9,R,51.9 R,SO2,>,greater than,5.46%,pass/fail,>,greater than,95%,pass/fail,>,greater than,80%,pass/fail,<,less than,1%,pass/fail,>,greater than,80%,pass/fail,pass/fail
+51.9,G,51.9 G,SO2,>,greater than,10%,pass/fail,>,greater than,95%,pass/fail,>,greater than,80%,pass/fail,<,less than,1%,pass/fail,>,greater than,80%,pass/fail,pass/fail

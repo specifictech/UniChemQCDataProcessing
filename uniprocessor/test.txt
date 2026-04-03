@@ -1,0 +1,4 @@
+Batch Performance Value: 10.0%, Result: FAIL
+Batch Performance Value: 20.0%, Result: FAIL
+Batch Performance Value: 30.0%, Result: FAIL
+Batch Performance Value: 20.0%, Result: FAIL
